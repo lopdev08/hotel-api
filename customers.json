@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "name": "Juan Pérez",
+        "email": "juan.perez@example.com",
+        "phone": 1234567890,
+        "active_reservations": 3
+    },
+    {
+        "id": 2,
+        "name": "Maria González",
+        "email": "maria.gonzalez@example.com",
+        "phone": 1987654321,
+        "active_reservations": 0
+    },
+    {
+        "id": 3,
+        "name": "Carlos Fernández",
+        "email": "carlos.fernandez@example.com",
+        "phone": 1122334455,
+        "active_reservations": 0
+    },
+    {
+        "id": 4,
+        "name": "Ana López",
+        "email": "ana.lopez@example.com",
+        "phone": 5566778899,
+        "active_reservations": 0
+    },
+    {
+        "id": 5,
+        "name": "Luis Martínez",
+        "email": "luis.martinez@example.com",
+        "phone": 6677889900,
+        "active_reservations": 0
+    }
+]
