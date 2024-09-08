@@ -1,28 +1,28 @@
 ### Obtener todas las habitaciones
-GET http://localhost:3001/rooms/
+GET http://localhost:3001/rooms
 
 ### Obtener habitacion por id
-GET http://localhost:3001/rooms/5
+GET http://localhost:3001/rooms/66dbf097f88eec62a71a2bd9
 
 ### Crear habitacion
 POST http://localhost:3001/rooms
 Content-Type: application/json
 
 {
-    "number": 209,
-    "type": "individual",
-    "description": "Habitación doble con cama king size y vista a la ciudad",
-    "price_per_nigth": 200.00,
+    "number": 102,
+    "type": "suite",
+    "description": "Habitación doble con cama king size, jacuzzi y vista al mar  ",
+    "price_per_nigth": 300.00,
     "availability": true
 }
 
 ### Actualizar habitacion
-PUT http://localhost:3001/rooms/7
+PUT http://localhost:3001/rooms/66dbf097f88eec62a71a2bd9
 Content-Type: application/json
 
 {
-    "price_per_nigth": 130.25
+    "type": "doble"
 }
 
 ### Eliminar habitacion
-DELETE http://localhost:3001/rooms/7
+DELETE http://localhost:3001/rooms/66dbf077b435e279f70ab3f5
