@@ -4,13 +4,15 @@ const RoomController = require('../controllers/rooms')
 
 const roomsRouter = Router()
 
-roomsRouter.get('/', RoomController.getAll)
+const { validateCreate, validateUpdate, validateQuery } = require('../validators/rooms')
+
+roomsRouter.get('/', validateQuery, RoomController.getAll)
 
 roomsRouter.get('/:id', RoomController.getById)
 
-roomsRouter.post('/', RoomController.create)
+roomsRouter.post('/', validateCreate, RoomController.create)
 
-roomsRouter.put('/:id', RoomController.update)
+roomsRouter.put('/:id', validateUpdate, RoomController.update)
 
 roomsRouter.delete('/:id', RoomController.delete)
 

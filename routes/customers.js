@@ -4,13 +4,15 @@ const CustomerController = require('../controllers/customers')
 
 const customersRouter = Router()
 
-customersRouter.get('/', CustomerController.getAll)
+const { validateCreate, validateQuery, validateUpdate } = require('../validators/customers')
+
+customersRouter.get('/', validateQuery, CustomerController.getAll)
 
 customersRouter.get('/:id', CustomerController.getById)
 
-customersRouter.post('/', CustomerController.create)
+customersRouter.post('/', validateCreate, CustomerController.create)
 
-customersRouter.put('/:id', CustomerController.update)
+customersRouter.put('/:id', validateUpdate, CustomerController.update)
 
 customersRouter.delete('/:id', CustomerController.delete)
 

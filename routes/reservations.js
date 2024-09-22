@@ -4,13 +4,15 @@ const ReservationController = require('../controllers/reservations')
 
 const reservationsRouter = Router()
 
-reservationsRouter.get('/', ReservationController.getAll)
+const { validateCreate, validateQuery, validateUpdate } = require('../validators/reservations')
+
+reservationsRouter.get('/', validateQuery, ReservationController.getAll)
 
 reservationsRouter.get('/:id', ReservationController.getById)
 
-reservationsRouter.post('/', ReservationController.create)
+reservationsRouter.post('/', validateCreate, ReservationController.create)
 
-reservationsRouter.put('/:id', ReservationController.update)
+reservationsRouter.put('/:id', validateUpdate, ReservationController.update)
 
 reservationsRouter.delete('/:id', ReservationController.delete)
 

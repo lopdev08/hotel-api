@@ -1,30 +1,30 @@
 const Customer = require('../models/Customer')
 
 class CustomerController {
-    static async getAll(req, res) {
+    static async getAll(req, res, next) {
         try {
             let customers = await Customer.find({})
             const { name, email, phone } = req.query
 
-            if (name) {
+            if (name !== undefined) {
                 customers = customers.filter(customer => customer.name.toLowerCase().includes(name.toLowerCase()))
             }
 
-            if (email) {
+            if (email !== undefined) {
                 customers = customers.filter(customer => customer.email.toLowerCase().includes(email.toLowerCase()))
             }
 
-            if (phone) {
-                customers = customers.filter(customer => customer.phone === parseInt(phone))
+            if (phone !== undefined) {
+                customers = customers.filter(customer => customer.phone.contains(parseInt(phone)))
             }
 
             res.status(200).json(customers)
         } catch (error) {
-            console.error(error)
+            next(error)
         }
     }
 
-    static async getById(req, res) {
+    static async getById(req, res, next) {
         try {
             const id = req.params.id
             const customer = await Customer.findById(id)
@@ -35,28 +35,18 @@ class CustomerController {
 
             res.status(200).json(customer)
         } catch (error) {
-            console.error(error)
+            next(error)
         }
     }
 
-    static async create(req, res) {
+    static async create(req, res, next) {
         try {
             const { name, email, phone } = req.body
-
-            if (!name || !email || !phone) {
-                return res.status(400).json({ error: 'name, email or phone is missing' })
-            }
-
-            const customer = await Customer.find({ email: { $regex: new RegExp(email, 'i') } })
-
-            if (customer.length > 0) {
-                return res.status(400).json({ error: 'the email has already been registered' })
-            }
 
             const newCustomer = new Customer({
                 name: name,
                 email: email,
-                phone: parseInt(phone),
+                phone: phone,
                 active_reservations: 0
             })
 
@@ -64,22 +54,14 @@ class CustomerController {
 
             res.status(201).json(saveNewCustomer)
         } catch (error) {
-            console.error(error)
+            next(error)
         }
     }
 
-    static async update(req, res) {
+    static async update(req, res, next) {
         try {
             const id = req.params.id
             const newInfo = req.body
-
-            if (newInfo.name || newInfo.email || newInfo.active_reservations) {
-                return res.status(400).json({ error: 'you cannot edit the name, email or active reservations' })
-            }
-
-            if (!newInfo.phone) {
-                return res.status(400).json({ error: 'number is missing' })
-            }
 
             const customer = await Customer.findByIdAndUpdate(id, newInfo, { new: true })
 
@@ -89,11 +71,11 @@ class CustomerController {
 
             res.status(200).json(customer)
         } catch (error) {
-            console.error(error)
+            next(error)
         }
     }
 
-    static async delete(req, res) {
+    static async delete(req, res, next) {
         try {
             const id = req.params.id
             const customer = await Customer.findById(id)
@@ -102,11 +84,17 @@ class CustomerController {
                 return res.status(404).json({ error: 'customer not found' })
             }
 
+            if (customer.active_reservations > 0) {
+                return res.status(400).json({
+                    error: 'you cannot delete a customer with active reservations'
+                })
+            }
+
             await Customer.findByIdAndDelete(id)
 
             res.status(200).json(customer)
         } catch (error) {
-            console.error(error)
+            next(error)
         }
     }
 }

@@ -1,22 +1,22 @@
 ### Obtener todas las reservaciones
-GET http://localhost:3001/reservations?check_out_date=2024-09-10
+GET http://localhost:3001/reservations
 
 ### Obtener reservacion por id
-GET http://localhost:3001/reservations/2
+GET http://localhost:3001/reservations/66ef274b52e5a5409830fe6e
 
 ### Crear una reservacion
 POST http://localhost:3001/reservations
 Content-Type: application/json
 
 {
-    "customer_id": "66dc95652c3b3037da7602d8",
+    "customer_id": "66e7205465290a2b85d6fdc8",
     "room_id": "66dbf097f88eec62a71a2bd9",
-    "check_in_date": "2024-09-01",
-    "check_out_date": "2024-09-10"
+    "check_in_date": "2024-09-25",
+    "check_out_date": "2024-09-30"
 }
 
 ### Actualizar una reservacion
-PUT http://localhost:3001/reservations/66dd1f5bf03111f37d0f7a8c
+PUT http://localhost:3001/reservations/66ef274b52e5a5409830fe6e
 Content-Type: application/json
 
 {
@@ -24,4 +24,4 @@ Content-Type: application/json
 }
 
 ### Eliminar una resercacion
-DELETE http://localhost:3001/reservations/66dd1f5bf03111f37d0f7a8c
+DELETE http://localhost:3001/reservations/66ef5dbcb8eca1494f1c47b3
