@@ -9,10 +9,10 @@ POST http://localhost:3001/rooms
 Content-Type: application/json
 
 {
-    "number": 102,
-    "type": "doble",
-    "description": "Habitación doble con cama king size jacuzzi y vista al mar",
-    "price_per_nigth": 300,
+    "number": 104,
+    "type": "suite",
+    "description": "This is room 3 has a sea view",
+    "price_per_nigth": 450,
     "availability": true
 }
 

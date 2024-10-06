@@ -20,7 +20,7 @@ const validateCreate = [
         .custom(async (value, { req }) => {
             const customer = await Customer.find({ email: { $regex: new RegExp(value, 'i') } })
 
-            if (customer.length > 1) {
+            if (customer.length >= 1) {
                 throw new Error('the email has already been registered')
             }
 
@@ -60,7 +60,7 @@ const validateQuery = [
         .isNumeric()
         .isInt()
         .toInt()
-        .isLength({ min: 1, max: 15 }).withMessage('the minimum length is 1 and the maximum is 15')
+        .isLength({ min: 3, max: 15 }).withMessage('the minimum length is 3 and the maximum is 15')
     ,
     (req, res, next) => {
         validateResult(req, res, next)

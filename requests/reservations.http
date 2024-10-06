@@ -9,14 +9,14 @@ POST http://localhost:3001/reservations
 Content-Type: application/json
 
 {
-    "customer_id": "66e7205465290a2b85d6fdc8",
-    "room_id": "66dbf097f88eec62a71a2bd9",
-    "check_in_date": "2024-09-25",
-    "check_out_date": "2024-09-30"
+      "customer_id": "66fa0b4ec200c838f06b280d",
+      "room_id": "66de748bc35aad3ecd5d1a9a",
+      "check_in_date": "2024-10-10",
+      "check_out_date": "2024-10-15"
 }
 
 ### Actualizar una reservacion
-PUT http://localhost:3001/reservations/66ef274b52e5a5409830fe6e
+PUT http://localhost:3001/reservations/66dbf097f88eec62a71a2bd9
 Content-Type: application/json
 
 {

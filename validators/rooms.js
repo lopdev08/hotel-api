@@ -96,6 +96,8 @@ const validateQuery = [
             if (value < 50 || value > 1000) {
                 throw new Error('the minimum price is 50 and the maximum is 1000')
             }
+
+            return true
         })
     ,
     query('number')
@@ -110,7 +112,7 @@ const validateQuery = [
         .optional()
         .notEmpty()
         .isString()
-        .isLength({ min: 20, max: 200 })
+        .isLength({ min: 3, max: 200 })
         .matches(/^[A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]+$/).withMessage('the description cannot contain numbers or special characters.')
     ,
     (req, res, next) => {

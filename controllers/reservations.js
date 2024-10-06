@@ -101,32 +101,30 @@ class ReservationController {
             if (newInfo.room_id) {
                 const room = await Room.findById(newInfo.room_id)
 
-                const diff = calculateDiff(reservation[0].check_in_date, reservation[0].check_out_date)
-
+                const diff = calculateDiff(reservation.check_in_date, reservation.check_out_date)
                 const newRoom = {
                     room_number: room.number,
                     total_amount: parseFloat(room.price_per_nigth) * parseInt(diff)
                 }
 
 
-                const updatedRoom = { vailability: false }
+                const updatedRoom = { availability: false }
 
                 await Room.findByIdAndUpdate(newInfo.room_id, updatedRoom, { new: true })
 
-                const updatedOldRoom = { ...oldRoom, availability: true }
+                const updatedOldRoom = { availability: true }
 
-                const oldRoom = await Room.findByIdAndUpdate(reservation.room_id, updatedOldRoom, { new: true })
+                await Room.findByIdAndUpdate(reservation.room_id, updatedOldRoom, { new: true })
 
                 newInfo = { ...newInfo, ...newRoom }
             }
 
             if (newInfo.check_out_date) {
-                const diff = calculateDiff(reservation[0].check_in_date, newInfo.check_out_date)
-
                 const room = await Room.findById(reservation.room_id)
 
+                const diff = calculateDiff(reservation.check_in_date, newInfo.check_out_date)
                 const newAmmount = {
-                    total_amount: parseFloat(room.price_per_night) * parseInt(diff)
+                    total_amount: parseFloat(room.price_per_nigth) * parseInt(diff)
                 }
 
                 newInfo = { ...newInfo, ...newAmmount }

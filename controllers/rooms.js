@@ -5,7 +5,7 @@ const calculateDiff = require('../helpers/calculateDiff')
 class RoomController {
     static async getAll(req, res, next) {
         try {
-            let rooms = await Room.find()
+            let rooms = await Room.find({})
             const { type, availability, min_price, max_price, number, description } = req.query
 
             if (type !== undefined) {
@@ -81,7 +81,8 @@ class RoomController {
             if (newInfo.price_per_nigth) {
                 const reservation = await Reservation.find({ room_id: id })
 
-                if (reservation) {
+                if (reservation.length >= 1) {
+                    console.log('hay reservacion')
                     const diff = calculateDiff(reservation[0].check_in_date, reservation[0].check_out_date)
 
                     const newAmmount = { total_amount: parseFloat(newInfo.price_per_nigth) * parseInt(diff) }
@@ -112,12 +113,13 @@ class RoomController {
                 return res.status(404).json({ error: 'room not found' })
             }
 
-            const reservation = Reservation.find({ room_id: id })
+            const reservation = await Reservation.findOne({ room_id: id })
 
             if (reservation) {
                 const activeStates = ['checked-in', 'confirmed']
 
                 if (activeStates.includes(reservation.status)) {
+                    console.log('esta activa')
                     return res.status(400).json({ error: 'The room is being occupied on a reservation' })
                 }
             }
