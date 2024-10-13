@@ -1,34 +1,21 @@
 const mongoose = require('mongoose')
-const supertest = require('supertest')
-const { app, server } = require('../index')
+const { server } = require('../index')
 
 const Customer = require('../models/Customer')
+const Room = require('../models/Room')
+const Reservation = require('../models/Reservation')
 
-const api = supertest(app)
-
-const initialCustomers = [
-    {
-        name: "John Doe",
-        email: "john@gmail.com",
-        phone: "1234567890",
-        active_reservations: 0
-    },
-    {
-        name: "Jane Smith",
-        email: "jane@gmail.com",
-        phone: "0987654321",
-        active_reservations: 3
-    }
-]
+const { initialCustomers, api, getAllCustomers, getCustomerByName } = require('./helpers/customer_helper')
 
 beforeEach(async () => {
     await Customer.deleteMany({})
+    await Room.deleteMany({})
+    await Reservation.deleteMany({})
 
-    const customer1 = new Customer(initialCustomers[0])
-    await customer1.save()
-
-    const customer2 = new Customer(initialCustomers[1])
-    await customer2.save()
+    for (const customer of initialCustomers) {
+        const customerObject = new Customer(customer)
+        await customerObject.save()
+    }
 })
 
 test('customers are returned json', async () => {
@@ -39,13 +26,12 @@ test('customers are returned json', async () => {
 })
 
 test('there are two customers', async () => {
-    const response = await api.get('/customers')
+    const { response } = await getAllCustomers()
     expect(response.body).toHaveLength(initialCustomers.length)
 })
 
 test('the first customer name is John', async () => {
-    const response = await api.get('/customers')
-    const names = response.body.map(customer => customer.name)
+    const { names } = await getAllCustomers()
     expect(names).toContain('John Doe')
 })
 
@@ -62,8 +48,7 @@ test('the client is created successfully', async () => {
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/customers')
-    const names = response.body.map(customer => customer.name)
+    const { names, response } = await getAllCustomers()
 
     expect(response.body).toHaveLength(initialCustomers.length + 1)
     expect(names).toContain(newCustomer.name)
@@ -138,8 +123,7 @@ test('should return an error if the email is already registered', async () => {
         .expect(403)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/customers')
-    const emails = response.body.map(customer => customer.email)
+    const { emails, response } = await getAllCustomers()
 
     expect(response.body).toHaveLength(initialCustomers.length)
     expect(emails).toContain(newCustomer.email)
@@ -209,7 +193,7 @@ test('should return an error if the phone in query params is invalid', async () 
 })
 
 test('should return an error if trying to edit name, email, or active_reservations', async () => {
-    const customer = await Customer.findOne({ name: "John Doe" })
+    const customer = await getCustomerByName("John Doe")
     const id = customer.id
 
     const updatedCustomer = {
@@ -225,7 +209,7 @@ test('should return an error if trying to edit name, email, or active_reservatio
 })
 
 test('should update the phone if a valid and different value is provided', async () => {
-    const customer = await Customer.findOne({ name: "John Doe" })
+    const customer = await getCustomerByName("John Doe")
     const id = customer.id
 
     const updatedCustomer = {
@@ -240,7 +224,7 @@ test('should update the phone if a valid and different value is provided', async
 })
 
 test('should return an error if phone is missing during update', async () => {
-    const customer = await Customer.findOne({ name: "John Doe" })
+    const customer = await getCustomerByName("John Doe")
     const id = customer.id
 
     const updatedCustomer = {
@@ -296,7 +280,7 @@ test('should return an error if there are validation errors in the creation requ
 })
 
 test('should update the customer with a new valid phone', async () => {
-    const customer = await Customer.findOne({ name: "John Doe" })
+    const customer = await getCustomerByName("John Doe")
     const id = customer.id
 
     const updatedCustomer = {
@@ -311,7 +295,7 @@ test('should update the customer with a new valid phone', async () => {
 })
 
 test('should return an error if trying to update the phone with the same value', async () => {
-    const customer = await Customer.findOne({ name: "John Doe" })
+    const customer = await getCustomerByName("John Doe")
     const id = customer.id
 
     const updatedCustomer = {
@@ -326,7 +310,7 @@ test('should return an error if trying to update the phone with the same value',
 })
 
 test('should delete the customer if there are no active reservations', async () => {
-    const customer = await Customer.findOne({ name: "John Doe" })
+    const customer = await getCustomerByName("John Doe")
     const id = customer.id
 
     await api
@@ -336,7 +320,7 @@ test('should delete the customer if there are no active reservations', async () 
 })
 
 test('should return an error if trying to delete a customer with active reservations', async () => {
-    const customer = await Customer.findOne({ name: "Jane Smith" })
+    const customer = await getCustomerByName("Jane Smith")
     const id = customer.id
 
     await api

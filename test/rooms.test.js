@@ -1,62 +1,26 @@
 const mongoose = require('mongoose')
-const supertest = require('supertest')
-const { app, server } = require('../index')
+const { server } = require('../index')
 
 const Room = require('../models/Room')
 const Reservation = require('../models/Reservation')
 const Customer = require('../models/Customer')
 
-const api = supertest(app)
-
-const initialRooms = [
-    {
-        number: 101,
-        type: "doble",
-        description: 'This is room one, it has a view of the city',
-        price_per_nigth: 233,
-        availability: true
-    },
-    {
-        number: 102,
-        type: "suite",
-        description: 'This is room two and it has a jacuzzi',
-        price_per_nigth: 350,
-        availability: false
-    }
-]
-
-const initialCustomers = [
-    {
-        name: "John Doe",
-        email: "john@gmail.com",
-        phone: "1234567890",
-        active_reservations: 0
-    },
-    {
-        name: "Jane Smith",
-        email: "jane@gmail.com",
-        phone: "0987654321",
-        active_reservations: 3
-    }
-]
-
+const { api, initialRooms, initialCustomers, getAllRooms, getRoomByNumber } = require('./helpers/room_helper')
 
 beforeEach(async () => {
+    await Customer.deleteMany({})
     await Room.deleteMany({})
     await Reservation.deleteMany({})
-    await Customer.deleteMany({})
 
-    const room1 = new Room(initialRooms[0])
-    await room1.save()
+    for (const room of initialRooms) {
+        const roomObject = new Room(room)
+        await roomObject.save()
+    }
 
-    const room2 = new Room(initialRooms[1])
-    await room2.save()
-
-    const customer1 = new Customer(initialCustomers[0])
-    await customer1.save()
-
-    const customer2 = new Customer(initialCustomers[1])
-    await customer2.save()
+    for (const customer of initialCustomers) {
+        const customerObject = new Customer(customer)
+        await customerObject.save()
+    }
 
 })
 
@@ -68,14 +32,13 @@ test('rooms are returned as json', async () => {
 })
 
 test('there are two rooms', async () => {
-    const response = await api.get('/rooms')
+    const { response } = await getAllRooms()
 
     expect(response.body).toHaveLength(initialRooms.length)
 })
 
 test('the first room is "doble"', async () => {
-    const response = await api.get('/rooms')
-    const types = response.body.map(room => room.type)
+    const { types } = await getAllRooms()
 
     expect(types).toContain('doble')
 })
@@ -95,8 +58,7 @@ test('a valid room can be added', async () => {
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/rooms')
-    const numbers = response.body.map(room => room.number)
+    const { numbers, response } = await getAllRooms()
 
     expect(response.body).toHaveLength(initialRooms.length + 1)
     expect(numbers).toContain(newRoom.number)
@@ -189,7 +151,8 @@ test('should return rooms filtered by description', async () => {
 })
 
 test('should return a room by its ID', async () => {
-    const room = await Room.findOne({ number: 101 })
+    // const room = await Room.findOne({ number: 101 })
+    const room = await getRoomByNumber(101)
     const response = await api.get(`/rooms/${room.id}`)
 
     expect(response.status).toBe(200)
@@ -208,7 +171,8 @@ test('should return 404 if the room is not found', async () => {
 })
 
 test('should update an existing room with valid data', async () => {
-    const room = await Room.findOne({ number: 101 })
+    // const room = await Room.findOne({ number: 101 })
+    const room = await getRoomByNumber(101)
     const updatedRoom = {
         type: 'suite',
         price_per_nigth: 300,
@@ -236,7 +200,8 @@ test('should return error 404 if the room to update does not exist', async () =>
 })
 
 test('should update only specified fields of the room', async () => {
-    const room = await Room.findOne({ number: 101 })
+    // const room = await Room.findOne({ number: 101 })
+    const room = await getRoomByNumber(101)
     const updatedRoom = {
         availability: false
     }
@@ -253,7 +218,8 @@ test('should update only specified fields of the room', async () => {
 })
 
 test('should delete a room by its ID', async () => {
-    const room = await Room.findOne({ number: 101 })
+    // const room = await Room.findOne({ number: 101 })
+    const room = await getRoomByNumber(101)
 
     await api
         .delete(`/rooms/${room.id}`)
@@ -274,14 +240,15 @@ test('should return 404 if the room to delete does not exist', async () => {
 })
 
 test('should return error if the room has active reservations', async () => {
-    const room = await Room.findOne({ number: 101 })
+    // const room = await Room.findOne({ number: 101 })
+    const room = await getRoomByNumber(101)
     const customer = await Customer.findOne({ name: 'John Doe' })
 
     const reservation = {
         customer_id: customer.id,
         room_id: room.id,
-        check_in_date: '2024-10-10',
-        check_out_date: '2024-10-15'
+        check_in_date: '2025-10-10',
+        check_out_date: '2025-10-15'
     }
 
     await api
@@ -301,7 +268,8 @@ test('should return error if the room has active reservations', async () => {
 })
 
 test('should return 200 with room data after successful deletion', async () => {
-    const room = await Room.findOne({ number: 102 })
+    // const room = await Room.findOne({ number: 102 })
+    const room = await getRoomByNumber(102)
 
     const response = await api
         .delete(`/rooms/${room.id}`)
@@ -333,7 +301,7 @@ test('should return error if number is missing', async () => {
         .expect(403)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/rooms')
+    const { response } = await getAllRooms()
     expect(response.body).toHaveLength(initialRooms.length)
 })
 
@@ -352,7 +320,7 @@ test('should return error if price per night is invalid', async () => {
         .expect(403)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/rooms')
+    const { response } = await getAllRooms()
     expect(response.body).toHaveLength(initialRooms.length)
 })
 
@@ -371,7 +339,7 @@ test('should return error if room type is invalid', async () => {
         .expect(403)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/rooms')
+    const { response } = await getAllRooms()
     expect(response.body).toHaveLength(initialRooms.length)
 })
 
@@ -390,7 +358,7 @@ test('should return error if number already exists', async () => {
         .expect(403)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/rooms')
+    const { response } = await getAllRooms()
     expect(response.body).toHaveLength(initialRooms.length)
 })
 
@@ -408,7 +376,7 @@ test('should return error if availability is missing', async () => {
         .expect(403)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/rooms')
+    const { response } = await getAllRooms()
     expect(response.body).toHaveLength(initialRooms.length)
 })
 
@@ -425,7 +393,7 @@ test('should return error if required fields are missing', async () => {
         .expect(403)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/rooms')
+    const { response } = await getAllRooms()
     expect(response.body).toHaveLength(initialRooms.length)
 })
 
@@ -439,7 +407,8 @@ test('should return error if the room ID is invalid', async () => {
 })
 
 test('should return error if price per night is invalid during update', async () => {
-    const room = await Room.findOne({ number: 101 })
+    // const room = await Room.findOne({ number: 101 })
+    const room = await getRoomByNumber(101)
     const updatedRoom = {
         price_per_nigth: 1500
     }
@@ -452,7 +421,8 @@ test('should return error if price per night is invalid during update', async ()
 })
 
 test('should return error if room availability is not provided during update', async () => {
-    const room = await Room.findOne({ number: 101 })
+    // const room = await Room.findOne({ number: 101 })
+    const room = await getRoomByNumber(101)
     const updatedRoom = {
         availability: "available"
     }
