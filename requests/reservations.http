@@ -24,4 +24,4 @@ Content-Type: application/json
 }
 
 ### Eliminar una resercacion
-DELETE http://localhost:3001/reservations/66ef5dbcb8eca1494f1c47b3
+DELETE http://localhost:3001/reservations/66ef5deab8eca1494f1c47d3

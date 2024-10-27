@@ -1,5 +1,7 @@
 const Customer = require('../models/Customer')
 
+const bcrypt = require('bcrypt')
+
 class CustomerController {
     static async getAll(req, res, next) {
         try {
@@ -41,11 +43,16 @@ class CustomerController {
 
     static async create(req, res, next) {
         try {
-            const { name, email, phone } = req.body
+            const { username, name, email, password, phone } = req.body
+
+            const saltRounds = 10
+            const passwordHash = await bcrypt.hash(password, saltRounds)
 
             const newCustomer = new Customer({
+                username: username,
                 name: name,
                 email: email,
+                passwordHash: passwordHash,
                 phone: phone,
                 active_reservations: 0
             })

@@ -27,6 +27,29 @@ const validateCreate = [
             return true
         })
     ,
+    check('username')
+        .exists()
+        .notEmpty().withMessage('the username field is empty')
+        .isString()
+        .isLength({ min: 3, max: 50 })
+        .custom(async (value, { req }) => {
+            const customer = await Customer.find({ username: { $regex: new RegExp(value, 'i') } })
+
+            if (customer.length >= 1) {
+                throw new Error('the username has already been registered')
+            }
+
+            return true
+        }
+        )
+    ,
+    check('password')
+        .exists()
+        .notEmpty().withMessage('the password field is empty')
+        .isString()
+        .isLength({ min: 8, max: 50 })
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/).withMessage('the password must contain at least one uppercase letter, one lowercase letter and one number')
+    ,
     check('phone')
         .exists()
         .notEmpty().withMessage('the phone field is empty')

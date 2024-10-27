@@ -9,8 +9,10 @@ POST http://localhost:3001/customers
 Content-Type: application/json
 
 {
+    "username": "jes82",
     "name": "Jesus Lopez",
     "email": "jesus.lopez82@gmail.com",
+    "password": "jespassword0282",
     "phone": 3123123123
 }
 
@@ -23,4 +25,4 @@ Content-Type: application/json
 }
 
 ### Eliminar cliente
-DELETE http://localhost:3001/customers/12e3456789asd0
+DELETE http://localhost:3001/customers/670c6e1ffa2cfe768692ce88

@@ -8,7 +8,11 @@ const reservationSchema = new Schema({
     check_in_date: String,
     check_out_date: String,
     total_amount: Number,
-    status: String
+    status: String,
+    customer: {
+        type: Schema.Types.ObjectId,
+        ref: 'Customer'
+    }
 })
 
 reservationSchema.set('toJSON', {

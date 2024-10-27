@@ -38,6 +38,8 @@ test('the first customer name is John', async () => {
 test('the client is created successfully', async () => {
     const newCustomer = {
         name: "Jane Doe",
+        username: "JNDoe04",
+        password: "JNs0498RD",
         email: "doe@gmail.com",
         phone: "1029384756"
     }
@@ -57,6 +59,8 @@ test('the client is created successfully', async () => {
 test('should return an error if the name field is empty', async () => {
     const newCustomer = {
         name: "",
+        username: "JDoe02",
+        password: "Es23RMn4",
         email: "john@gmail.com",
         phone: "1234567890"
     }
@@ -71,6 +75,8 @@ test('should return an error if the name field is empty', async () => {
 test('should return an error if the name length is shorter or longer than allowed', async () => {
     const newCustomer = {
         name: "J",
+        username: "JDoe02",
+        password: "Es23RMn4",
         email: "john@gmail.com",
         phone: "1234567890"
     }
@@ -85,6 +91,8 @@ test('should return an error if the name length is shorter or longer than allowe
 test('should return an error if the name contains invalid characters', async () => {
     const newCustomer = {
         name: "John @Doe 123",
+        username: "JDoe02",
+        password: "Es23RMn4",
         email: "john@gmail.com",
         phone: "1234567890"
     }
@@ -99,6 +107,8 @@ test('should return an error if the name contains invalid characters', async () 
 test('should return an error if the email field is empty', async () => {
     const newCustomer = {
         name: "John Doe",
+        username: "JDoe02",
+        password: "Es23RMn4",
         email: "",
         phone: "1234567890"
     }
@@ -113,6 +123,8 @@ test('should return an error if the email field is empty', async () => {
 test('should return an error if the email is already registered', async () => {
     const newCustomer = {
         name: "John Doe",
+        username: "JDoe02",
+        password: "Es23RMn4",
         email: "john@gmail.com",
         phone: "1234567890"
     }
@@ -132,8 +144,111 @@ test('should return an error if the email is already registered', async () => {
 test('should return an error if the phone is not valid', async () => {
     const newCustomer = {
         name: "Juan Perez",
+        username: "JDoe02",
+        password: "Es23RMn4",
         email: "juan@gmail.com",
         phone: "123"
+    }
+
+    await api
+        .post('/customers')
+        .send(newCustomer)
+        .expect(403)
+        .expect('Content-Type', /application\/json/)
+})
+
+test('should return an error if the username field is empty', async () => {
+    const newCustomer = {
+        name: "John Doe",
+        username: "",
+        password: "Es23RMn4",
+        email: "john@gmail.com",
+        phone: "1234567890"
+    }
+
+    await api
+        .post('/customers')
+        .send(newCustomer)
+        .expect(403)
+        .expect('Content-Type', /application\/json/)
+})
+
+test('should return an error if the username length is shorter or longer than allowed', async () => {
+    const newCustomer = {
+        name: "John Doe",
+        username: "J",
+        password: "ESDe3123",
+        email: "john@gmail.com",
+        phone: "1234567890"
+    }
+
+    await api
+        .post('/customers')
+        .send(newCustomer)
+        .expect(403)
+        .expect('Content-Type', /application\/json/)
+})
+
+test('should return an error if the username is already registered', async () => {
+    const newCustomer = {
+        name: "John Doe",
+        username: "JDoe02",
+        password: "ESDe3123",
+        email: "john@gmail.com",
+        phone: "1234567890"
+    }
+
+    await api
+        .post('/customers')
+        .send(newCustomer)
+        .expect(403)
+        .expect('Content-Type', /application\/json/)
+
+    const { usernames, response } = await getAllCustomers()
+
+    expect(response.body).toHaveLength(initialCustomers.length)
+    expect(usernames).toContain(newCustomer.username)
+})
+
+test('should return an error if the password field is empty', async () => {
+    const newCustomer = {
+        name: "John Doe",
+        username: "JDoe02",
+        password: "",
+        email: "john@gmail.com",
+        phone: "1234567890"
+    }
+
+    await api
+        .post('/customers')
+        .send(newCustomer)
+        .expect(403)
+        .expect('Content-Type', /application\/json/)
+})
+
+test('should return an error if the password length is shorter or longer than allowed', async () => {
+    const newCustomer = {
+        name: "John Doe",
+        username: "JDoe02",
+        password: "Es",
+        email: "john@gmail.com",
+        phone: "1234567890"
+    }
+
+    await api
+        .post('/customers')
+        .send(newCustomer)
+        .expect(403)
+        .expect('Content-Type', /application\/json/)
+})
+
+test('should return an error if the password is not valid', async () => {
+    const newCustomer = {
+        name: "John Doe",
+        username: "JDoe02",
+        password: "dasdasdas",
+        email: "jhon@gmail.com",
+        phone: "1234567890"
     }
 
     await api
