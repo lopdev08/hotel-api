@@ -9,10 +9,10 @@ POST http://localhost:3001/reservations
 Content-Type: application/json
 
 {
-      "customer_id": "66fa0b4ec200c838f06b280d",
+      "customer_id": "671eef6199a3dda309ee9067",
       "room_id": "66de748bc35aad3ecd5d1a9a",
-      "check_in_date": "2024-10-10",
-      "check_out_date": "2024-10-15"
+      "check_in_date": "2024-10-29",
+      "check_out_date": "2024-11-02"
 }
 
 ### Actualizar una reservacion

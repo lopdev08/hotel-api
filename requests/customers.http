@@ -12,7 +12,7 @@ Content-Type: application/json
     "username": "jes82",
     "name": "Jesus Lopez",
     "email": "jesus.lopez82@gmail.com",
-    "password": "jespassword0282",
+    "password": "JesPassword0282",
     "phone": 3123123123
 }
 
@@ -25,4 +25,4 @@ Content-Type: application/json
 }
 
 ### Eliminar cliente
-DELETE http://localhost:3001/customers/670c6e1ffa2cfe768692ce88
+DELETE http://localhost:3001/customers/670c738d14f5c5ba77557c9b

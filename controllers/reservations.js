@@ -6,7 +6,12 @@ const calculateDiff = require('../helpers/calculateDiff')
 class ReservationController {
     static async getAll(req, res, next) {
         try {
-            let reservations = await Reservation.find({})
+            let reservations = await Reservation.find({}).populate('customer_id', {
+                username: 1,
+                email: 1,
+                phone: 1,
+                active_reservations: 1
+            })
             const { check_in_date, check_out_date, customer_id, room_id } = req.query
 
             if (check_in_date !== undefined) {
@@ -63,9 +68,12 @@ class ReservationController {
                 check_in_date: check_in_date,
                 check_out_date: check_out_date,
                 total_amount: parseFloat(room.price_per_nigth) * parseInt(diff),
-                status: "confirmed",
+                status: "confirmed"
             })
             const saveNewReservation = await newReservation.save()
+
+            customer.reservations = customer.reservations.concat(saveNewReservation._id)
+            await customer.save()
 
             const updatedRoom = { availability: false }
 

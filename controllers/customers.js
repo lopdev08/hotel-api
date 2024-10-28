@@ -5,7 +5,13 @@ const bcrypt = require('bcrypt')
 class CustomerController {
     static async getAll(req, res, next) {
         try {
-            let customers = await Customer.find({})
+            let customers = await Customer.find({}).populate('reservations', {
+                room_number: 1,
+                check_in_date: 1,
+                check_out_date: 1,
+                total_amount: 1,
+                status: 1
+            })
             const { name, email, phone } = req.query
 
             if (name !== undefined) {
