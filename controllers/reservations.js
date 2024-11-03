@@ -53,7 +53,9 @@ class ReservationController {
 
     static async create(req, res, next) {
         try {
-            const { customer_id, room_id, check_in_date, check_out_date } = req.body
+            const { room_id, check_in_date, check_out_date } = req.body
+
+            const { customer_id } = req
 
             const customer = await Customer.findById(customer_id)
             const room = await Room.findById(room_id)

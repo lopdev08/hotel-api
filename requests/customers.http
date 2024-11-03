@@ -2,22 +2,22 @@
 GET http://localhost:3001/customers
 
 ### Obtener cliente por id
-GET http://localhost:3001/customers/66e75dae46f4f76f5359782c
+GET http://localhost:3001/customers/id
 
 ### Crear cliente
 POST http://localhost:3001/customers
 Content-Type: application/json
 
 {
-    "username": "jes82",
-    "name": "Jesus Lopez",
-    "email": "jesus.lopez82@gmail.com",
-    "password": "JesPassword0282",
-    "phone": 3123123123
+    "username": "lopdev08",
+    "name": "lop developer",
+    "email": "lopdev.08@gmail.com",
+    "password": "password",
+    "phone": 2313123121
 }
 
 ### Actualizar cliente
-PUT http://localhost:3001/customers/66e75dae46f4f76f5359782c
+PUT http://localhost:3001/customers/id
 Content-Type: application/json
 
 {
@@ -25,4 +25,4 @@ Content-Type: application/json
 }
 
 ### Eliminar cliente
-DELETE http://localhost:3001/customers/670c738d14f5c5ba77557c9b
+DELETE http://localhost:3001/customers/id

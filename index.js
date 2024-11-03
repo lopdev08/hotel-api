@@ -15,6 +15,7 @@ const notFound = require('./middlewares/notFound')
 const roomsRouter = require('./routes/rooms')
 const customersRouter = require('./routes/customers')
 const reservationsRouter = require('./routes/reservations')
+const loginRouter = require('./routes/login')
 
 app.use(express.json())
 
@@ -27,6 +28,8 @@ app.use('/rooms', roomsRouter)
 app.use('/customers', customersRouter)
 
 app.use('/reservations', reservationsRouter)
+
+app.use('/login', loginRouter)
 
 app.use(notFound)
 
